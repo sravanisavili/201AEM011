@@ -1,30 +1,49 @@
-from flask import Flask, request #importing request library
-from flask_restful import Resource, Api
+from flask import Flask, request
+from flask_restful import Resource, Api, reqparse
+from flask_jwt import JWT, jwt_required
+
+from security import authenticate, identity
 
 app = Flask(__name__)
+app.secret_key = 'sravani'
 api = Api(app)
 
-items = [] #creating a list called items (contains a dictionary for each item)
+items = []
 
-class Item(Resource): #Let us rename our Resource as Item
+class Item(Resource):
     def get(self, name):
         for item in items:
             if item['name'] == name:
                 return item
-        return {'item': None}, 404 #setting up an error code if requested object cannot be found
+        return {'item' : None}, 404
 
     def post(self, name):
-            data = request.get_json()
-            item = {'name': name, 'price': data['price']} # will access the price key of a data dictionary
-            items.append(item)
-            return item, 201 #status code showing a successful creating of an object
+        data = request.get_json()
+        item = {'name' : name, 'price' : data['price']}
+        items.append(item)
+        return item, 201
+    def put(self, name):
+        parser =  reqparse.RequestParser()
+        parser.add_argument('price',
+            type = float,
+            required = True,
+            help = 'This field cannot be left blank!'
+        )
 
-
-class ItemList(Resource): # Our new Resource
+class Itemlist(Resource):
     def get(self):
-        return {'items': items} #returns a list of items (dictionary items)
+        return {'items' : items}
 
 api.add_resource(Item, '/item/<string:name>')
-api.add_resource(ItemList, '/items') #add a resource with a correct endpoint
+api.add_resource(Itemlist, '/items')
 
-app.run(port=5000, debug=True) # Makes an error (if smth goes wrong) more clear in form of html
+jwt = JWT(app, authenticate, identity)
+
+@app.route('/auth')
+@jwt_required()
+def auth():
+    return '%s' % current_identity
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
+    #sravani
