@@ -1,4 +1,4 @@
-from flask_restful import Resource, Api,  reqparse
+from flask_restful import Resource, Api, abort,  reqparse
 from flask_jwt import JWT, jwt_required, current_identity
 
 import sqlite3
@@ -15,7 +15,7 @@ class Item(Resource):
         item = self.find_by_name(name)
         if item:
             return item
-        return {'message':'Item not found'}, 404
+        return {"message":"Item not found"}, 404
 
 
     @jwt_required()

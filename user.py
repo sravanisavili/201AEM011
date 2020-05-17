@@ -72,7 +72,7 @@ class User:
 
             user = cls(*row)
         else:
-            user = None
+            user = None 
 
         connection.close()
         return user
