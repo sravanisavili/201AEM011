@@ -1,4 +1,4 @@
-from flask_restful import Resource, Api, abort,  reqparse
+from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required, current_identity
 
 import sqlite3
@@ -7,7 +7,11 @@ import sqlite3
 class Item(Resource):
     TABLE_NAME = 'items'
     parser = reqparse.RequestParser()
-    parser.add_argument('price', type=float,required=True, help='This field cannot be left blank')
+    parser.add_argument('price',
+    type=float,
+    required=True,
+    help='This field cannot be left blank'
+    )
 
 
     @jwt_required()
