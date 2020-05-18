@@ -10,7 +10,7 @@ from item import Item
 
 app = Flask(__name__)
 
-app.secret_key = 'sravani'
+app.secret_key = 'Girija'
 
 api = Api(app)
 
